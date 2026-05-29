@@ -10,3 +10,5 @@ Proyek Mata Kuliah Rekayasa Data
 
 ## Lampiran
 * **Link Prompt AI  :** 
+
+jere(SQL) - https://gemini.google.com/app/bfb67c73621aae0e
