@@ -1,128 +1,210 @@
+CREATE DATABASE restaurant_db;
 USE restaurant_db;
 
--- =====================================================
--- b. DATA CLEANING
--- =====================================================
+SET SQL_SAFE_UPDATES = 0;
 
-UPDATE resto_customers
-SET email = 'unknown@email.com'
-WHERE email IS NULL 
-OR TRIM(email) = '';
+-- DATA CLEANING
+-- a. tabel resto_customers
+SELECT * FROM resto_customers;
 
-UPDATE resto_customers
-SET status_member = 'Unknown'
-WHERE status_member IS NULL 
-OR TRIM(status_member) = '';
-
-UPDATE resto_transactions
-SET id_customer = -1
-WHERE id_customer IS NULL;
-
-UPDATE resto_transaction_items
-SET quantity = 1
-WHERE quantity IS NULL OR quantity <= 0;
-
-UPDATE resto_customers
-SET email = LOWER(email);
-
-UPDATE resto_customers
-SET status_member = UPPER(TRIM(status_member));
-
-
--- =====================================================
--- c. VALIDASI EMAIL (REGEX)
--- =====================================================
-
-DROP VIEW IF EXISTS view_invalid_customer_email;
-
--- Membuat view untuk menyaring daftar customer dengan format email tidak valid
-CREATE VIEW view_invalid_customer_email AS
-SELECT
+SELECT 
     id_customer,
     nama,
     email
 FROM resto_customers
-WHERE email NOT REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$';
+WHERE email IS NULL
+OR TRIM(email) = '';
+   
+SELECT id_customer,
+    nama,
+    email
+FROM resto_customers
+WHERE email NOT REGEXP '^user[0-9]+@email\.com$';
+
+UPDATE resto_customers
+SET email = CONCAT('user', id_customer, '@email.com')
+WHERE email IS NULL 
+OR TRIM(email) = ''
+OR email NOT REGEXP '^user[0-9]+@email\.com$';
 
 
--- =====================================================
--- d. VALIDASI PERHITUNGAN TRANSAKSI
--- =====================================================
+-- b. tabel resto_menu
+-- Pada saat upload data ke SQL, ubah type data harga dari double ke text untuk sementara. Hal ini agar baris dengan NULL dapat terbaca.
+SELECT * FROM resto_menu;
 
-DROP VIEW IF EXISTS view_transaction_validation;
+SELECT * FROM resto_menu
+WHERE harga IS NULL
+OR harga = '';
 
--- Membuat view untuk mengaudit kesesuaian total belanja dan menentukan status VALID/INVALID
-CREATE VIEW view_transaction_validation AS
-SELECT
-    t.id_transaction,
+UPDATE resto_menu 
+SET harga = NULL 
+WHERE harga = '';
+
+ALTER TABLE resto_menu 
+MODIFY harga INT NULL;
+
+SELECT kategori, ROUND(AVG(harga)) FROM resto_menu
+WHERE harga IS NOT NULL
+GROUP BY kategori;
+
+UPDATE resto_menu AS m
+JOIN (SELECT kategori, ROUND(AVG(harga)) AS avg_harga 
+		FROM resto_menu
+        WHERE harga IS NOT NULL
+		GROUP BY kategori) as n
+ON m.kategori = n.kategori
+SET m.harga = n.avg_harga
+WHERE harga IS NULL;
+
+
+-- c. tabel resto_transactions
+-- Pada saat upload data ke SQL, ubah type data id_customer dari double ke text untuk sementara. Hal ini agar baris dengan NULL dapat terbaca.
+SELECT * FROM resto_transactions;
+
+SELECT * FROM resto_transactions
+WHERE id_customer IS NULL
+OR id_customer = '';
+-- nilai kosong pada id_customer diisi dengan dummy variable 0
+-- karena tidak ada informasi lain yang dapat membantu untuk mengisi nilai kosong
+UPDATE resto_transactions 
+SET id_customer = 0 
+WHERE id_customer = '';
+ALTER TABLE resto_transactions 
+MODIFY id_customer INT;
+
+-- kolom tanggal_transaksi diubah formatnya menjadi date
+ALTER TABLE resto_transactions
+MODIFY tanggal_transaksi DATE;
+
+-- validasi perhitungan transaksi di tabel resto_transactions
+SELECT 
+	t.id_transaction,
+	t.id_customer,
     t.id_branch,
-    t.total_bayar AS total_tercatat,
-    ROUND(SUM(ti.quantity * m.harga), 2) AS total_seharusnya,
+    t.tanggal_transaksi,
+    t.total_bayar AS total_bayar_tercatat,
+    SUM(ti.subtotal) AS total_bayar_seharusnya,
     CASE
-        WHEN ABS(t.total_bayar - SUM(ti.quantity * m.harga)) < 1 THEN 'VALID'
+		WHEN t.total_bayar = SUM(ti.subtotal) THEN 'VALID'
         ELSE 'INVALID'
-    END AS transaction_status
-FROM resto_transactions t
-JOIN resto_transaction_items ti ON t.id_transaction = ti.id_transaction
-JOIN resto_menu m ON ti.id_menu = m.id_menu
-GROUP BY t.id_transaction, t.id_branch, t.total_bayar;
+	END AS status_validasi
+FROM resto_transactions AS t
+JOIN resto_transaction_items AS ti
+ON t.id_transaction = ti.id_transaction
+GROUP BY 
+    t.id_transaction,
+    t.id_customer,
+    t.id_branch,
+    t.tanggal_transaksi,
+    t.total_bayar;    
 
 
--- =====================================================
--- e. ANALISIS VIEW PERFORMA BISNIS
--- =====================================================
+-- d. tabel resto_transaction_items
+SELECT * FROM resto_transaction_items;
 
-DROP VIEW IF EXISTS view_branch_revenue;
-DROP VIEW IF EXISTS view_menu_popularity;
-DROP VIEW IF EXISTS view_member_behavior;
+SELECT * FROM resto_transaction_items
+WHERE quantity IS NULL
+OR quantity = '';
 
--- 1. View Performa Pendapatan Cabang
+-- quantity dianggap text karena terdapat nilai kosong
+UPDATE resto_transaction_items  
+SET quantity = NULL 
+WHERE quantity = '';
+ALTER TABLE resto_transaction_items 
+MODIFY quantity INT NULL;
+
+-- nilai quantity kosong di tabel resto_transaction_items, 
+-- diisi dengan pembagian subtotal dengan harga di resto_menu 
+-- harga di resto_menu dianggap final
+UPDATE resto_transaction_items AS ti
+JOIN resto_menu AS m
+ON ti.id_menu = m.id_menu
+SET ti.quantity = ROUND(ti.subtotal/m.harga)
+WHERE ti.quantity IS NULL;
+
+-- validasi perhitungan transaksi di tabel resto_transaction_item
+SELECT 
+	ti.id_item, 
+    ti.id_transaction, 
+	ti.id_menu, 
+    ti.quantity, 
+    m.harga AS harga_satuan,
+    ti.subtotal AS subtotal_tercatat,
+    ti.quantity * m.harga AS subtotal_seharusnya,
+    CASE
+		WHEN ti.subtotal = ti.quantity * m.harga THEN 'VALID'
+        ELSE 'INVALID'
+	END AS status_validasi
+FROM resto_transaction_items AS ti
+JOIN resto_menu AS m
+ON ti.id_menu = m.id_menu;
+
+
+-- Buat View
+-- View branch_revenue
 CREATE VIEW view_branch_revenue AS
 SELECT
     id_branch,
-    ROUND(SUM(total_bayar), 2) total_revenue,
-    COUNT(id_transaction) total_transactions
+    COUNT(id_transaction) AS jumlah_transaksi,
+    SUM(total_bayar) AS total_pendapatan
 FROM resto_transactions
 GROUP BY id_branch;
 
--- 2. View Popularitas Menu Terjual
+SELECT * FROM view_branch_revenue;	
+
+-- View menu_popularity
 CREATE VIEW view_menu_popularity AS
 SELECT
     m.id_menu,
     m.nama_menu,
     m.kategori,
-    SUM(ti.quantity) total_unit_terjual
-FROM resto_menu m
-JOIN resto_transaction_items ti ON m.id_menu = ti.id_menu
-GROUP BY m.id_menu, m.nama_menu, m.kategori;
+    SUM(ti.quantity) AS total_menu_terjual
+FROM resto_menu AS m
+JOIN resto_transaction_items AS ti 
+ON m.id_menu = ti.id_menu
+GROUP BY 
+	m.id_menu, 
+	m.nama_menu, 
+	m.kategori
+ORDER BY m.id_menu;
 
--- 3. View Perilaku Belanja Member vs Non-Member
+SELECT * FROM view_menu_popularity;
+
+-- View member_behavior
 CREATE VIEW view_member_behavior AS
 SELECT
     c.status_member,
-    COUNT(DISTINCT t.id_transaction) total_transaksi,
-    ROUND(AVG(t.total_bayar), 2) avg_pengeluaran_per_transaksi,
-    SUM(ti.quantity) total_item_dibeli
-FROM resto_customers c
-JOIN resto_transactions t ON c.id_customer = t.id_customer
-JOIN resto_transaction_items ti ON t.id_transaction = ti.id_transaction
+    COUNT(DISTINCT c.id_customer) AS jumlah_customer,
+    COUNT(t.id_transaction) AS jumlah_transaksi,
+    ROUND(AVG(t.total_bayar), 2) AS avg_pengeluaran_per_transaksi
+FROM resto_customers AS c
+JOIN resto_transactions AS t
+ON c.id_customer = t.id_customer
 GROUP BY c.status_member;
 
--- =====================================================
--- OUTPUT SELURUH VIEW
--- =====================================================
-
--- Menampilkan daftar pelanggan yang format penulisan emailnya salah atau tidak valid berdasarkan aturan REGEX
-SELECT * FROM view_invalid_customer_email;
-
--- Menampilkan status keabsahan transaksi ('VALID' atau 'INVALID') dengan mencocokkan nilai total_bayar terhadap hasil kalkulasi ulang quantity dikali harga menu
-SELECT * FROM view_transaction_validation;
-
--- Menampilkan total pendapatan finansial dan performa jumlah transaksi yang berhasil diraup oleh tiap cabang restoran
-SELECT * FROM view_branch_revenue;
-
--- Menampilkan urutan produk menu makanan/minuman yang paling laku keras berdasarkan akumulasi jumlah quantity terjual
-SELECT * FROM view_menu_popularity;
-
--- Menampilkan perbandingan karakteristik belanja, frekuensi makan, dan rata-rata pengeluaran antara kelompok pelanggan member vs non-member
 SELECT * FROM view_member_behavior;
+
+-- View transaction_validation
+CREATE VIEW view_transaction_validation AS
+SELECT 
+	t.id_transaction,
+	t.id_customer,
+    t.id_branch,
+    t.tanggal_transaksi,
+    t.total_bayar AS total_bayar_tercatat,
+    SUM(ti.subtotal) AS total_bayar_seharusnya,
+    CASE
+		WHEN t.total_bayar = SUM(ti.subtotal) THEN 'VALID'
+        ELSE 'INVALID'
+	END AS status_validasi
+FROM resto_transactions AS t
+JOIN resto_transaction_items AS ti
+ON t.id_transaction = ti.id_transaction
+GROUP BY 
+    t.id_transaction,
+    t.id_customer,
+    t.id_branch,
+    t.tanggal_transaksi,
+    t.total_bayar;
+
+SELECT * FROM view_transaction_validation;
