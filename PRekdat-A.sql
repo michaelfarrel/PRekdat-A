@@ -153,6 +153,7 @@ SELECT
     c.status_member,
     COUNT(DISTINCT c.id_customer) AS jumlah_customer,
     COUNT(t.id_transaction) AS jumlah_transaksi,
+    SUM(t.total_bayar) AS total_pengeluaran,
     ROUND(AVG(t.total_bayar), 2) AS avg_pengeluaran_per_transaksi
 FROM resto_customers AS c
 JOIN resto_transactions AS t
