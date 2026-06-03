@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<talendfile:ContextType xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:talendfile="platform:/resource/org.talend.model/model/TalendFile.xsd" xmi:id="_Uh5BkF9rEfG8kt8nyY8gig" confirmationNeeded="false" name="Default">
+  <contextParameter xmi:id="_Uh5BkV9rEfG8kt8nyY8gig" comment="" name="restaurant_db_connection_Port" prompt="restaurant_db_connection_Port?" promptNeeded="false" repositoryContextId="" type="id_String" value="3306"/>
+  <contextParameter xmi:id="_Uh5Bkl9rEfG8kt8nyY8gig" comment="" name="restaurant_db_connection_Database" prompt="restaurant_db_connection_Database?" promptNeeded="false" repositoryContextId="" type="id_String" value="restaurant_db"/>
+  <contextParameter xmi:id="_Uh5Bk19rEfG8kt8nyY8gig" comment="" name="restaurant_db_connection_Login" prompt="restaurant_db_connection_Login?" promptNeeded="false" repositoryContextId="" type="id_String" value="root"/>
+  <contextParameter xmi:id="_Uh5BlF9rEfG8kt8nyY8gig" comment="" name="restaurant_db_connection_Password" prompt="restaurant_db_connection_Password?" promptNeeded="false" repositoryContextId="" type="id_Password" value="enc:system.encryption.key.v1:pZpHPhBTrMEzLD2zQ4l7RIua8TkAk10KN/C9KSl2Yh8DMof3jA=="/>
+  <contextParameter xmi:id="_Uh5BlV9rEfG8kt8nyY8gig" comment="" name="restaurant_db_connection_Server" prompt="restaurant_db_connection_Server?" promptNeeded="false" repositoryContextId="" type="id_String" value="127.0.0.1"/>
+  <contextParameter xmi:id="_Uh5Bll9rEfG8kt8nyY8gig" comment="" name="restaurant_db_connection_AdditionalParams" prompt="restaurant_db_connection_AdditionalParams?" promptNeeded="false" repositoryContextId="" type="id_String" value="noDatetimeStringSync=true&amp;enabledTLSProtocols=TLSv1.2,TLSv1.1,TLSv1"/>
+</talendfile:ContextType>
