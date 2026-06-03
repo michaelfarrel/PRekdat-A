@@ -76,29 +76,6 @@ MODIFY id_customer INT;
 ALTER TABLE resto_transactions
 MODIFY tanggal_transaksi DATE;
 
--- validasi perhitungan transaksi di tabel resto_transactions
-SELECT 
-	t.id_transaction,
-	t.id_customer,
-    t.id_branch,
-    t.tanggal_transaksi,
-    t.total_bayar AS total_bayar_tercatat,
-    SUM(ti.subtotal) AS total_bayar_seharusnya,
-    CASE
-		WHEN t.total_bayar = SUM(ti.subtotal) THEN 'VALID'
-        ELSE 'INVALID'
-	END AS status_validasi
-FROM resto_transactions AS t
-JOIN resto_transaction_items AS ti
-ON t.id_transaction = ti.id_transaction
-GROUP BY 
-    t.id_transaction,
-    t.id_customer,
-    t.id_branch,
-    t.tanggal_transaksi,
-    t.total_bayar;    
-
-
 -- d. tabel resto_transaction_items
 SELECT * FROM resto_transaction_items;
 
@@ -122,7 +99,7 @@ ON ti.id_menu = m.id_menu
 SET ti.quantity = ROUND(ti.subtotal/m.harga)
 WHERE ti.quantity IS NULL;
 
--- validasi perhitungan transaksi di tabel resto_transaction_item
+-- Cek perhitungan transaksi di tabel resto_transaction_item
 SELECT 
 	ti.id_item, 
     ti.id_transaction, 
@@ -132,9 +109,9 @@ SELECT
     ti.subtotal AS subtotal_tercatat,
     ti.quantity * m.harga AS subtotal_seharusnya,
     CASE
-		WHEN ti.subtotal = ti.quantity * m.harga THEN 'VALID'
-        ELSE 'INVALID'
-	END AS status_validasi
+		WHEN ti.subtotal = ti.quantity * m.harga THEN 'Sesuai'
+        ELSE 'Tidak Sesuai'
+	END AS Keterangan
 FROM resto_transaction_items AS ti
 JOIN resto_menu AS m
 ON ti.id_menu = m.id_menu;
@@ -187,24 +164,21 @@ SELECT * FROM view_member_behavior;
 -- View transaction_validation
 CREATE VIEW view_transaction_validation AS
 SELECT 
-	t.id_transaction,
-	t.id_customer,
-    t.id_branch,
-    t.tanggal_transaksi,
-    t.total_bayar AS total_bayar_tercatat,
-    SUM(ti.subtotal) AS total_bayar_seharusnya,
+    t.id_transaction,
+    t.total_bayar,
+    SUM(ti.quantity * m.harga) AS total_seharusnya,
     CASE
-		WHEN t.total_bayar = SUM(ti.subtotal) THEN 'VALID'
+		WHEN t.total_bayar = SUM(ti.quantity * m.harga) THEN 'VALID'
         ELSE 'INVALID'
-	END AS status_validasi
+	END AS Keterangan_validasi
 FROM resto_transactions AS t
 JOIN resto_transaction_items AS ti
-ON t.id_transaction = ti.id_transaction
+    ON t.id_transaction = ti.id_transaction
+JOIN resto_menu AS m
+    ON ti.id_menu = m.id_menu
 GROUP BY 
-    t.id_transaction,
-    t.id_customer,
-    t.id_branch,
-    t.tanggal_transaksi,
+	t.id_transaction, 
     t.total_bayar;
 
 SELECT * FROM view_transaction_validation;
+
