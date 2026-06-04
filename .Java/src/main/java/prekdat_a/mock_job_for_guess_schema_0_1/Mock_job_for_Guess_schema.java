@@ -130,43 +130,6 @@ public class Mock_job_for_Guess_schema implements TalendJob {
 
 		public void synchronizeContext() {
 
-			if (restaurant_db_connection_Port != null) {
-
-				this.setProperty("restaurant_db_connection_Port", restaurant_db_connection_Port.toString());
-
-			}
-
-			if (restaurant_db_connection_Database != null) {
-
-				this.setProperty("restaurant_db_connection_Database", restaurant_db_connection_Database.toString());
-
-			}
-
-			if (restaurant_db_connection_Login != null) {
-
-				this.setProperty("restaurant_db_connection_Login", restaurant_db_connection_Login.toString());
-
-			}
-
-			if (restaurant_db_connection_Password != null) {
-
-				this.setProperty("restaurant_db_connection_Password", restaurant_db_connection_Password.toString());
-
-			}
-
-			if (restaurant_db_connection_Server != null) {
-
-				this.setProperty("restaurant_db_connection_Server", restaurant_db_connection_Server.toString());
-
-			}
-
-			if (restaurant_db_connection_AdditionalParams != null) {
-
-				this.setProperty("restaurant_db_connection_AdditionalParams",
-						restaurant_db_connection_AdditionalParams.toString());
-
-			}
-
 		}
 
 		// if the stored or passed value is "<TALEND_NULL>" string, it mean null
@@ -178,41 +141,6 @@ public class Mock_job_for_Guess_schema implements TalendJob {
 			return origin_value;
 		}
 
-		public String restaurant_db_connection_Port;
-
-		public String getRestaurant_db_connection_Port() {
-			return this.restaurant_db_connection_Port;
-		}
-
-		public String restaurant_db_connection_Database;
-
-		public String getRestaurant_db_connection_Database() {
-			return this.restaurant_db_connection_Database;
-		}
-
-		public String restaurant_db_connection_Login;
-
-		public String getRestaurant_db_connection_Login() {
-			return this.restaurant_db_connection_Login;
-		}
-
-		public java.lang.String restaurant_db_connection_Password;
-
-		public java.lang.String getRestaurant_db_connection_Password() {
-			return this.restaurant_db_connection_Password;
-		}
-
-		public String restaurant_db_connection_Server;
-
-		public String getRestaurant_db_connection_Server() {
-			return this.restaurant_db_connection_Server;
-		}
-
-		public String restaurant_db_connection_AdditionalParams;
-
-		public String getRestaurant_db_connection_AdditionalParams() {
-			return this.restaurant_db_connection_AdditionalParams;
-		}
 	}
 
 	protected ContextProperties context = new ContextProperties(); // will be instanciated by MS.
@@ -837,7 +765,7 @@ public class Mock_job_for_Guess_schema implements TalendJob {
 				} catch (Exception e) {
 // Exception is thrown if db don't support, no need to catch exception here
 				}
-				java.sql.ResultSet rs = stm.executeQuery("");
+				java.sql.ResultSet rs = stm.executeQuery("SELECT * FROM view_transaction_validation");
 				java.sql.ResultSetMetaData rsmd = rs.getMetaData();
 				int numbOfColumn = rsmd.getColumnCount();
 
@@ -1111,67 +1039,6 @@ public class Mock_job_for_Guess_schema implements TalendJob {
 			}
 			class ContextProcessing {
 				private void processContext_0() {
-					context.setContextType("restaurant_db_connection_Port", "id_String");
-					if (context.getStringValue("restaurant_db_connection_Port") == null) {
-						context.restaurant_db_connection_Port = null;
-					} else {
-						context.restaurant_db_connection_Port = (String) context
-								.getProperty("restaurant_db_connection_Port");
-					}
-					context.setContextType("restaurant_db_connection_Database", "id_String");
-					if (context.getStringValue("restaurant_db_connection_Database") == null) {
-						context.restaurant_db_connection_Database = null;
-					} else {
-						context.restaurant_db_connection_Database = (String) context
-								.getProperty("restaurant_db_connection_Database");
-					}
-					context.setContextType("restaurant_db_connection_Login", "id_String");
-					if (context.getStringValue("restaurant_db_connection_Login") == null) {
-						context.restaurant_db_connection_Login = null;
-					} else {
-						context.restaurant_db_connection_Login = (String) context
-								.getProperty("restaurant_db_connection_Login");
-					}
-					context.setContextType("restaurant_db_connection_Password", "id_Password");
-					if (context.getStringValue("restaurant_db_connection_Password") == null) {
-						context.restaurant_db_connection_Password = null;
-					} else {
-						String pwd_restaurant_db_connection_Password_value = context
-								.getProperty("restaurant_db_connection_Password");
-						context.restaurant_db_connection_Password = null;
-						if (pwd_restaurant_db_connection_Password_value != null) {
-							if (context_param.containsKey("restaurant_db_connection_Password")) {// no need to decrypt
-																									// if it come from
-																									// program argument
-																									// or parent job
-																									// runtime
-								context.restaurant_db_connection_Password = pwd_restaurant_db_connection_Password_value;
-							} else if (!pwd_restaurant_db_connection_Password_value.isEmpty()) {
-								try {
-									context.restaurant_db_connection_Password = routines.system.PasswordEncryptUtil
-											.decryptPassword(pwd_restaurant_db_connection_Password_value);
-									context.put("restaurant_db_connection_Password",
-											context.restaurant_db_connection_Password);
-								} catch (java.lang.RuntimeException e) {
-									// do nothing
-								}
-							}
-						}
-					}
-					context.setContextType("restaurant_db_connection_Server", "id_String");
-					if (context.getStringValue("restaurant_db_connection_Server") == null) {
-						context.restaurant_db_connection_Server = null;
-					} else {
-						context.restaurant_db_connection_Server = (String) context
-								.getProperty("restaurant_db_connection_Server");
-					}
-					context.setContextType("restaurant_db_connection_AdditionalParams", "id_String");
-					if (context.getStringValue("restaurant_db_connection_AdditionalParams") == null) {
-						context.restaurant_db_connection_AdditionalParams = null;
-					} else {
-						context.restaurant_db_connection_AdditionalParams = (String) context
-								.getProperty("restaurant_db_connection_AdditionalParams");
-					}
 				}
 
 				public void processAllContext() {
@@ -1187,29 +1054,6 @@ public class Mock_job_for_Guess_schema implements TalendJob {
 
 		// get context value from parent directly
 		if (parentContextMap != null && !parentContextMap.isEmpty()) {
-			if (parentContextMap.containsKey("restaurant_db_connection_Port")) {
-				context.restaurant_db_connection_Port = (String) parentContextMap.get("restaurant_db_connection_Port");
-			}
-			if (parentContextMap.containsKey("restaurant_db_connection_Database")) {
-				context.restaurant_db_connection_Database = (String) parentContextMap
-						.get("restaurant_db_connection_Database");
-			}
-			if (parentContextMap.containsKey("restaurant_db_connection_Login")) {
-				context.restaurant_db_connection_Login = (String) parentContextMap
-						.get("restaurant_db_connection_Login");
-			}
-			if (parentContextMap.containsKey("restaurant_db_connection_Password")) {
-				context.restaurant_db_connection_Password = (java.lang.String) parentContextMap
-						.get("restaurant_db_connection_Password");
-			}
-			if (parentContextMap.containsKey("restaurant_db_connection_Server")) {
-				context.restaurant_db_connection_Server = (String) parentContextMap
-						.get("restaurant_db_connection_Server");
-			}
-			if (parentContextMap.containsKey("restaurant_db_connection_AdditionalParams")) {
-				context.restaurant_db_connection_AdditionalParams = (String) parentContextMap
-						.get("restaurant_db_connection_AdditionalParams");
-			}
 		}
 
 		// Resume: init the resumeUtil
@@ -1218,7 +1062,6 @@ public class Mock_job_for_Guess_schema implements TalendJob {
 		resumeUtil.initCommonInfo(pid, rootPid, fatherPid, projectName, jobName, contextStr, jobVersion);
 
 		List<String> parametersToEncrypt = new java.util.ArrayList<String>();
-		parametersToEncrypt.add("restaurant_db_connection_Password");
 		// Resume: jobStart
 		resumeUtil.addLog("JOB_STARTED", "JOB:" + jobName, parent_part_launcher, Thread.currentThread().getId() + "",
 				"", "", "", "", resumeUtil.convertToJsonText(context, parametersToEncrypt));
@@ -1433,6 +1276,6 @@ public class Mock_job_for_Guess_schema implements TalendJob {
 	ResumeUtil resumeUtil = null;
 }
 /************************************************************************************************
- * 46773 characters generated by Talend Open Studio for Data Integration on the
- * June 3, 2026 at 11:51:57 PM ICT
+ * 39383 characters generated by Talend Open Studio for Data Integration on the
+ * June 5, 2026 at 4:06:29 AM ICT
  ************************************************************************************************/

@@ -99,6 +99,7 @@ ON ti.id_menu = m.id_menu
 SET ti.quantity = ROUND(ti.subtotal/m.harga)
 WHERE ti.quantity IS NULL;
 
+
 -- Cek perhitungan transaksi di tabel resto_transaction_item
 SELECT 
 	ti.id_item, 
@@ -182,4 +183,3 @@ GROUP BY
     t.total_bayar;
 
 SELECT * FROM view_transaction_validation;
-
