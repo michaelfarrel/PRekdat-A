@@ -43,7 +43,7 @@
     <elementParameter field="TEXT" name="PROPERTIES_IMPLICIT_CONTEXT" value="&quot;&quot;" show="false"/>
     <elementParameter field="TEXT" name="SCHEMA_DB_IMPLICIT_CONTEXT" value="&quot;&quot;" show="false"/>
     <elementParameter field="TEXT" name="USER_IMPLICIT_CONTEXT" value="&quot;&quot;" show="false"/>
-    <elementParameter field="PASSWORD" name="PASS_IMPLICIT_CONTEXT" value="enc:system.encryption.key.v1:Fuk/263SaVMNlGtRA9ga91iqy0LYCKM3YEV36mtt" show="false"/>
+    <elementParameter field="PASSWORD" name="PASS_IMPLICIT_CONTEXT" value="enc:system.encryption.key.v1:GxNcQLAiGUGjoFMnuFgxaXU3i57HJcYdwWu3aysU" show="false"/>
     <elementParameter field="FILE" name="DBFILE_IMPLICIT_CONTEXT" value="&quot;&quot;" show="false"/>
     <elementParameter field="DBTABLE" name="DBTABLE_IMPLICIT_CONTEXT" value="&quot;&quot;" show="false"/>
     <elementParameter field="TEXT" name="QUERY_CONDITION_IMPLICIT_CONTEXT" value="&quot;&quot;" show="false"/>
@@ -78,7 +78,7 @@
     <elementParameter field="TEXT" name="PROPERTIES" value="&quot;&quot;" show="false"/>
     <elementParameter field="TEXT" name="SCHEMA_DB" value="&quot;&quot;" show="false"/>
     <elementParameter field="TEXT" name="USER" value="&quot;&quot;" show="false"/>
-    <elementParameter field="PASSWORD" name="PASS" value="enc:system.encryption.key.v1:OtmEB7oI95kr70jQrbXx9G4RHIS9wY+Nu30TqXK9" show="false"/>
+    <elementParameter field="PASSWORD" name="PASS" value="enc:system.encryption.key.v1:OtCmlP0s2xVtkUblqwNK6PF2D68/2E6NhhI3lhhE" show="false"/>
     <elementParameter field="FILE" name="DBFILE" value="&quot;&quot;" show="false"/>
     <elementParameter field="DBTABLE" name="TABLE_STATS" value="&quot;&quot;" show="false"/>
     <elementParameter field="DBTABLE" name="TABLE_LOGS" value="&quot;&quot;" show="false"/>
@@ -119,7 +119,7 @@
     <elementParameter field="TEXT" name="DBNAME" value="&quot;restaurant_db&quot;"/>
     <elementParameter field="TEXT" name="TYPE" value="MYSQL" show="false"/>
     <elementParameter field="TEXT" name="USER" value="&quot;root&quot;"/>
-    <elementParameter field="PASSWORD" name="PASS" value="enc:system.encryption.key.v1:/JK9RzyNlubNsxJc1ORGqqAh2hTH6EL5LC0x8VbtjPjdufdpdHIC"/>
+    <elementParameter field="PASSWORD" name="PASS" value="enc:system.encryption.key.v1:t6MK4S4u5meu3y+2GkzsS4/a4yrJaAavP9Tg6RPY79wbJA7KMKha"/>
     <elementParameter field="DBTABLE" name="TABLE" value="&quot;view_branch_revenue&quot;"/>
     <elementParameter field="QUERYSTORE_TYPE" name="QUERYSTORE" value="&quot;&quot;"/>
     <elementParameter field="TECHNICAL" name="QUERYSTORE:REPOSITORY_QUERYSTORE_TYPE" value="" show="false"/>
@@ -146,9 +146,9 @@
     <elementParameter field="TEXT" name="LABEL" value="view_branch_revenue"/>
     <elementParameter field="TEXT" name="CONNECTION_FORMAT" value="row"/>
     <metadata connector="FLOW" name="tDBInput_1">
-      <column comment="" key="true" length="16383" name="id_branch" nullable="true" pattern="" precision="0" sourceType="TEXT" type="id_String" originalLength="-1" usefulColumn="true"/>
-      <column comment="" defaultValue="" key="false" length="50" name="jumlah_transaksi" nullable="true" pattern="" precision="0" sourceType="INT" type="id_Integer" originalLength="50" usefulColumn="true"/>
-      <column comment="" defaultValue="" key="false" length="50" name="total_pendapatan" nullable="true" pattern="" precision="0" sourceType="INT" type="id_Integer" originalLength="50" usefulColumn="true"/>
+      <column comment="" key="false" length="50" name="id_branch" nullable="true" pattern="" precision="0" sourceType="TEXT" type="id_String" originalLength="50" usefulColumn="true"/>
+      <column comment="" defaultValue="" key="false" length="21" name="jumlah_transaksi" nullable="false" pattern="" precision="0" sourceType="BIGINT" type="id_Long" originalLength="-1" usefulColumn="true"/>
+      <column comment="" defaultValue="" key="false" length="32" name="total_pendapatan" nullable="true" pattern="" precision="0" sourceType="DECIMAL" type="id_BigDecimal" originalLength="-1" usefulColumn="true"/>
     </metadata>
   </node>
   <node componentName="tMap" componentVersion="2.1" offsetLabelX="0" offsetLabelY="0" posX="416" posY="64">
@@ -166,7 +166,7 @@
     <elementParameter field="CHECK" name="CHANGE_HASH_AND_EQUALS_FOR_BIGDECIMAL" value="true"/>
     <elementParameter field="TEXT" name="CONNECTION_FORMAT" value="row"/>
     <metadata connector="FLOW" name="out1">
-      <column comment="" key="true" length="16383" name="id_branch" nullable="true" pattern="" precision="0" sourceType="TEXT" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="true" length="50" name="id_branch" nullable="true" pattern="" precision="0" sourceType="TEXT" type="id_String" originalLength="50" usefulColumn="true"/>
       <column comment="" defaultValue="" key="false" length="50" name="jumlah_transaksi" nullable="true" pattern="" precision="0" sourceType="INT" type="id_Integer" originalLength="50" usefulColumn="true"/>
       <column comment="" defaultValue="" key="false" length="50" name="total_pendapatan" nullable="true" pattern="" precision="0" sourceType="INT" type="id_Integer" originalLength="50" usefulColumn="true"/>
     </metadata>
@@ -180,8 +180,8 @@
       </outputTables>
       <inputTables sizeState="INTERMEDIATE" name="row1" matchingMode="UNIQUE_MATCH" lookupMode="LOAD_ONCE">
         <mapperTableEntries name="id_branch" type="id_String" nullable="true"/>
-        <mapperTableEntries name="jumlah_transaksi" type="id_Integer" nullable="true"/>
-        <mapperTableEntries name="total_pendapatan" type="id_Integer" nullable="true"/>
+        <mapperTableEntries name="jumlah_transaksi" type="id_Long"/>
+        <mapperTableEntries name="total_pendapatan" type="id_BigDecimal" nullable="true"/>
       </inputTables>
     </nodeData>
   </node>
@@ -217,7 +217,7 @@
     <elementParameter field="TEXT" name="LABEL" value="output_branch_revenue"/>
     <elementParameter field="TEXT" name="CONNECTION_FORMAT" value="row"/>
     <metadata connector="FLOW" name="tFileOutputDelimited_1">
-      <column comment="" key="true" length="16383" name="id_branch" nullable="true" pattern="" precision="0" sourceType="TEXT" type="id_String" originalLength="-1" usefulColumn="true"/>
+      <column comment="" key="true" length="50" name="id_branch" nullable="true" pattern="" precision="0" sourceType="TEXT" type="id_String" originalLength="50" usefulColumn="true"/>
       <column comment="" defaultValue="" key="false" length="50" name="jumlah_transaksi" nullable="true" pattern="" precision="0" sourceType="INT" type="id_Integer" originalLength="50" usefulColumn="true"/>
       <column comment="" defaultValue="" key="false" length="50" name="total_pendapatan" nullable="true" pattern="" precision="0" sourceType="INT" type="id_Integer" originalLength="50" usefulColumn="true"/>
     </metadata>
@@ -234,7 +234,7 @@
     <elementParameter field="TEXT" name="DBNAME" value="&quot;restaurant_db&quot;"/>
     <elementParameter field="TEXT" name="TYPE" value="MYSQL" show="false"/>
     <elementParameter field="TEXT" name="USER" value="&quot;root&quot;"/>
-    <elementParameter field="PASSWORD" name="PASS" value="enc:system.encryption.key.v1:NZHlJVlSmxHtorJNO41nPBO6Nrl5EQVzNVhtkyQ+TvSyVVmMISsv"/>
+    <elementParameter field="PASSWORD" name="PASS" value="enc:system.encryption.key.v1:a+cf+vBPsdCVwE/Dvt/TeTnck2dgyryaltVztc2dyXTOS2tBUcjk"/>
     <elementParameter field="DBTABLE" name="TABLE" value="&quot;view_menu_popularity&quot;"/>
     <elementParameter field="QUERYSTORE_TYPE" name="QUERYSTORE" value="&quot;&quot;"/>
     <elementParameter field="TECHNICAL" name="QUERYSTORE:REPOSITORY_QUERYSTORE_TYPE" value="" show="false"/>
@@ -290,7 +290,7 @@
       <column comment="" defaultValue="" key="false" length="50" name="total_menu_terjual" nullable="true" pattern="" precision="0" sourceType="INT" type="id_Integer" originalLength="50" usefulColumn="true"/>
     </metadata>
     <nodeData xsi:type="TalendMapper:MapperData">
-      <uiProperties shellMaximized="true"/>
+      <uiProperties/>
       <varTables sizeState="INTERMEDIATE" name="Var" minimized="true"/>
       <outputTables sizeState="INTERMEDIATE" name="out2">
         <mapperTableEntries name="id_menu" expression="row2.id_menu " type="id_Integer" nullable="true"/>
@@ -356,7 +356,7 @@
     <elementParameter field="TEXT" name="DBNAME" value="&quot;restaurant_db&quot;"/>
     <elementParameter field="TEXT" name="TYPE" value="MYSQL" show="false"/>
     <elementParameter field="TEXT" name="USER" value="&quot;root&quot;"/>
-    <elementParameter field="PASSWORD" name="PASS" value="enc:system.encryption.key.v1:FywCoWoQROUF2TvuPmXrmk40frh9uVwZBLBYdhbldPJkVcCYdLF7"/>
+    <elementParameter field="PASSWORD" name="PASS" value="enc:system.encryption.key.v1:98veSlNjWI5oIP0TgUB2HQhcAkFsFoRquzip+5UpvuOWGyuqVoAA"/>
     <elementParameter field="DBTABLE" name="TABLE" value="&quot;view_member_behavior&quot;"/>
     <elementParameter field="QUERYSTORE_TYPE" name="QUERYSTORE" value="&quot;&quot;"/>
     <elementParameter field="TECHNICAL" name="QUERYSTORE:REPOSITORY_QUERYSTORE_TYPE" value="" show="false"/>
@@ -416,7 +416,7 @@
       <column comment="" defaultValue="" key="false" length="50" name="avg_pengeluaran_per_transaksi" nullable="true" pattern="" precision="2" sourceType="DECIMAL" type="id_BigDecimal" originalLength="50" usefulColumn="true"/>
     </metadata>
     <nodeData xsi:type="TalendMapper:MapperData">
-      <uiProperties shellMaximized="true"/>
+      <uiProperties/>
       <varTables sizeState="INTERMEDIATE" name="Var" minimized="true"/>
       <outputTables sizeState="INTERMEDIATE" name="out3">
         <mapperTableEntries name="status_member" expression="row3.status_member " type="id_String" nullable="true"/>
@@ -485,7 +485,7 @@
     <elementParameter field="TEXT" name="DBNAME" value="&quot;restaurant_db&quot;"/>
     <elementParameter field="TEXT" name="TYPE" value="MYSQL" show="false"/>
     <elementParameter field="TEXT" name="USER" value="&quot;root&quot;"/>
-    <elementParameter field="PASSWORD" name="PASS" value="enc:system.encryption.key.v1:n8LT2HPdknl98fv0xsuJw8kOxqnskGLACW6tt1jBeuo2r9CDydeL"/>
+    <elementParameter field="PASSWORD" name="PASS" value="enc:system.encryption.key.v1:5IyZBcDxjhu03RhOsJlrIGmvBNBNHwFh6V/SjMRw/VeNWBPDHNFL"/>
     <elementParameter field="DBTABLE" name="TABLE" value="&quot;view_transaction_validation&quot;"/>
     <elementParameter field="QUERYSTORE_TYPE" name="QUERYSTORE" value="&quot;&quot;"/>
     <elementParameter field="TECHNICAL" name="QUERYSTORE:REPOSITORY_QUERYSTORE_TYPE" value="" show="false"/>
@@ -541,7 +541,7 @@
       <column comment="" key="false" length="10" name="Keterangan_validasi" nullable="true" pattern="" precision="0" sourceType="VARCHAR" type="id_String" originalLength="10" usefulColumn="true"/>
     </metadata>
     <nodeData xsi:type="TalendMapper:MapperData">
-      <uiProperties shellMaximized="true"/>
+      <uiProperties/>
       <varTables sizeState="INTERMEDIATE" name="Var" minimized="true"/>
       <outputTables sizeState="INTERMEDIATE" name="out4">
         <mapperTableEntries name="id_transaction" expression="row4.id_transaction " type="id_Integer" nullable="true"/>
